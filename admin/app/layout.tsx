@@ -1,5 +1,6 @@
 import "./globals.css";
 import { ToastProvider } from "@/app/context/ToastContext";
+import AdminNavbar from "@/app/components/AdminNavbar";
 
 export const metadata = {
   title: "Korezi Admin",
@@ -13,8 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-       <body>
+      <body>
         <ToastProvider>
+          <AdminNavbar />
            {children}
          </ToastProvider>
       </body>

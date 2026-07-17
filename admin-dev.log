@@ -1,0 +1,16 @@
+
+> admin@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.102:3001
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 1437ms
+ GET /categories 200 in 833ms (compile: 687ms, render: 146ms)
+✓ Compiled in 127ms
+✓ Compiled in 128ms
+ GET /products 200 in 98ms (compile: 64ms, render: 34ms)
+ GET /orders 200 in 156ms (compile: 129ms, render: 27ms)

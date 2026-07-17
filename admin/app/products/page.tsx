@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useToast } from "@/app/context/ToastContext";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
 
@@ -11,7 +12,11 @@ type Product = {
   slug?: string;
   brand?: string;
   category?: string;
-  price: number;
+  subCategory?: string;
+  regularPrice?: number;
+  salePrice?: number | null;
+  price?: number;
+  mrp?: number;
   stock: number;
   images?: string[];
   createdAt?: string;
@@ -27,9 +32,11 @@ type ApiResponse =
     };
 
 export default function AdminProductsPage() {
+  const { success, error } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -56,6 +63,30 @@ export default function AdminProductsPage() {
     load();
   }, []);
 
+  async function deleteProduct(product: Product) {
+    const ok = window.confirm(
+      `Delete "${product.name}"?\n\nThis action cannot be undone.`
+    );
+    if (!ok) return;
+
+    setDeletingId(product._id);
+    try {
+      const res = await fetch(`${API_BASE}/api/products/${product._id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Delete failed");
+
+      setProducts((prev) => prev.filter((item) => item._id !== product._id));
+      success("Product deleted.");
+    } catch (err: any) {
+      error(err?.message || "Product delete failed.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
     if (!s) return products;
@@ -64,7 +95,8 @@ export default function AdminProductsPage() {
       return (
         (p.name || "").toLowerCase().includes(s) ||
         (p.brand || "").toLowerCase().includes(s) ||
-        (p.category || "").toLowerCase().includes(s)
+        (p.category || "").toLowerCase().includes(s) ||
+        (p.subCategory || "").toLowerCase().includes(s)
       );
     });
   }, [q, products]);
@@ -79,6 +111,18 @@ export default function AdminProductsPage() {
         </div>
 
         <div className="flex gap-3">
+          <Link
+            href="/brands"
+            className="px-4 py-2 rounded-xl border bg-white text-sm hover:bg-gray-50"
+          >
+            Brands
+          </Link>
+          <Link
+            href="/categories"
+            className="px-4 py-2 rounded-xl border bg-white text-sm hover:bg-gray-50"
+          >
+            Categories
+          </Link>
           <Link
             href="/products/new"
             className="px-4 py-2 rounded-xl bg-black text-white text-sm"
@@ -119,19 +163,20 @@ export default function AdminProductsPage() {
               <th className="py-3 px-6">Price</th>
               <th className="py-3 px-6">Stock</th>
               <th className="py-3 px-6">Status</th>
+              <th className="py-3 px-6 text-right">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {loading ? (
               <tr>
-                <td className="py-10 px-6 text-gray-500" colSpan={5}>
+                <td className="py-10 px-6 text-gray-500" colSpan={6}>
                   Loading products...
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td className="py-10 px-6 text-gray-500" colSpan={5}>
+                <td className="py-10 px-6 text-gray-500" colSpan={6}>
                   No products found.
                 </td>
               </tr>
@@ -139,6 +184,11 @@ export default function AdminProductsPage() {
               filtered.map((p) => {
                 const img = p.images?.[0];
                 const inStock = (p.stock ?? 0) > 0;
+                const regular = Number(p.regularPrice ?? p.mrp ?? p.price ?? 0);
+                const sale =
+                  p.salePrice != null && Number(p.salePrice) > 0 && Number(p.salePrice) < regular
+                    ? Number(p.salePrice)
+                    : null;
 
                 return (
                   <tr key={p._id} className="border-t">
@@ -166,9 +216,19 @@ export default function AdminProductsPage() {
                       </div>
                     </td>
 
-                    <td className="py-4 px-6">{p.category || "-"}</td>
+                    <td className="py-4 px-6">
+                      <div>{p.category || "-"}</div>
+                      {p.subCategory && (
+                        <div className="text-xs text-gray-500">{p.subCategory}</div>
+                      )}
+                    </td>
 
-                    <td className="py-4 px-6 font-medium">৳{p.price}</td>
+                    <td className="py-4 px-6 font-medium">
+                      <div>৳{sale ?? regular}</div>
+                      {sale != null && (
+                        <div className="text-xs text-gray-400 line-through">৳{regular}</div>
+                      )}
+                    </td>
 
                     <td className="py-4 px-6">{p.stock ?? 0}</td>
 
@@ -182,6 +242,25 @@ export default function AdminProductsPage() {
                       >
                         {inStock ? "In stock" : "Out of stock"}
                       </span>
+                    </td>
+
+                    <td className="py-4 px-6">
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          href={`/products/${p._id}/edit`}
+                          className="rounded-xl border px-3 py-2 text-xs font-semibold hover:bg-gray-50"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => deleteProduct(p)}
+                          disabled={deletingId === p._id}
+                          className="rounded-xl border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+                        >
+                          {deletingId === p._id ? "Deleting..." : "Delete"}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

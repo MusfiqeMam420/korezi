@@ -129,7 +129,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       const regularPrice = getRegular(item);
       const salePrice =
-        item.salePrice == null || item.salePrice === ""
+        item.salePrice === null || item.salePrice === undefined
+
           ? null
           : safeNumber(item.salePrice, null as any);
 

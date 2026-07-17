@@ -1,15 +1,25 @@
 import "./globals.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Inter_Tight } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import Navbar from "@/components/Navbar";
+import FloatingCart from "@/components/FloatingCart";
+import ExtensionErrorGuard from "@/components/ExtensionErrorGuard";
+import PageTransition from "@/components/PageTransition";
 import { CartProvider } from "@/app/context/CartContext";
 import { AuthProvider } from "@/app/context/AuthContext";
 import { ToastProvider } from "@/app/context/ToastContext";
 
 const SITE_NAME = "Korezi";
-const SITE_URL = "https://korezi.com"; // change to your real domain
+const SITE_URL = "https://korezi.com";
 const DESCRIPTION =
   "Authentic Korean skincare & beauty products in Bangladesh. Shop trusted K-beauty at Korezi.";
+
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--font-inter-tight",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -20,7 +30,6 @@ export const metadata: Metadata = {
   },
 
   description: DESCRIPTION,
-
   applicationName: SITE_NAME,
   referrer: "origin-when-cross-origin",
 
@@ -61,7 +70,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     images: [
       {
-        url: "/banner-1.webp", // your image in /public
+        url: "/banner-1.webp",
         width: 1200,
         height: 630,
         alt: `${SITE_NAME} Korean Skincare Store`,
@@ -91,40 +100,32 @@ export const metadata: Metadata = {
   },
 
   category: "shopping",
+};
 
+export const viewport: Viewport = {
   themeColor: "#000000",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
-      <head>
-        {/* Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-
-      <body>
+      <body className={interTight.className}>
+        <ExtensionErrorGuard />
         <ToastProvider>
           <AuthProvider>
             <CartProvider>
               <Navbar />
-              {children}
+              <PageTransition>{children}</PageTransition>
+              <FloatingCart />
             </CartProvider>
           </AuthProvider>
         </ToastProvider>
+
+        <GoogleAnalytics gaId="G-3LV3CFBERG" />
       </body>
     </html>
   );

@@ -1,11 +1,12 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { useState } from "react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const sp = useSearchParams();
   const email = sp.get("email") || "";
 
@@ -83,5 +84,13 @@ export default function VerifyEmailPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div className="max-w-md mx-auto px-6 py-16">Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

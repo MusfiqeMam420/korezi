@@ -17,7 +17,7 @@ function setAuthCookie(res, token) {
   res.cookie("korezi_token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: false, // set true in production (https)
+    secure: process.env.NODE_ENV === "production",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 }
@@ -91,7 +91,11 @@ router.get("/me", (req, res) => {
 
 // POST /api/auth/logout
 router.post("/logout", (req, res) => {
-  res.clearCookie("korezi_token", { httpOnly: true, sameSite: "lax", secure: false });
+  res.clearCookie("korezi_token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
   res.json({ message: "Logged out" });
 });
 

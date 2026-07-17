@@ -142,7 +142,7 @@ router.patch("/:id/status", requireAdmin, async (req, res) => {
   try {
     const { status } = req.body;
 
-    const allowed = ["pending", "processing", "shipped", "delivered", "cancelled"];
+    const allowed = ["pending", "processing", "confirmed", "shipped", "delivered", "cancelled"];
     if (!allowed.includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }

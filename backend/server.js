@@ -13,7 +13,11 @@ const app = express();
 // ✅ CORS (ONLY ONCE)
 const allowedOrigins = [
   process.env.FRONTEND_URL || "http://localhost:3000",
-  "http://localhost:3001",
+  process.env.ADMIN_URL || "http://localhost:3001",
+  ...(process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
 ];
 
 app.use(
@@ -36,6 +40,9 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ✅ Routes
 app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/categories", require("./routes/categoryRoutes"));
+app.use("/api/brands", require("./routes/brandRoutes"));
+app.use("/api/covers", require("./routes/coverRoutes"));
 app.use("/api/uploads", require("./routes/uploadRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));

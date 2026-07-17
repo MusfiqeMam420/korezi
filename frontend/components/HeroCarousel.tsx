@@ -48,7 +48,7 @@ export default function HeroCarousel() {
 
   return (
     <section className="max-w-7xl mx-auto px-6 pt-6">
-      <div className="relative rounded-3xl overflow-hidden h-[260px] sm:h-[340px] md:h-[420px] bg-gray-100">
+      <div className="relative rounded-xl overflow-hidden h-[260px] sm:h-[340px] md:h-[420px] bg-gray-100">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide.id}
@@ -99,7 +99,7 @@ export default function HeroCarousel() {
                 >
                   <Link
                     href={slide.href}
-                    className="inline-block px-6 py-3 rounded-xl bg-[#BE171F] hover:bg-black transition font-medium"
+                    className="inline-block px-6 py-3 rounded- bg-[#BE171F] hover:bg-black transition font-medium"
                   >
                     {slide.cta}
                   </Link>

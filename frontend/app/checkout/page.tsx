@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/app/context/CartContext";
 import { useAuth } from "@/app/context/AuthContext";
+import ProductImagePlaceholder from "@/components/ProductImagePlaceholder";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
 
@@ -289,7 +290,7 @@ export default function CheckoutPage() {
                     {i.image ? (
                       <img src={i.image} alt={i.name} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-[10px] text-gray-400">No image</span>
+                      <ProductImagePlaceholder />
                     )}
                   </div>
 

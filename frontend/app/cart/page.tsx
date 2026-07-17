@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
+import ProductImagePlaceholder from "@/components/ProductImagePlaceholder";
 
 export default function CartPage() {
   const {
@@ -93,7 +94,7 @@ export default function CartPage() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-xs text-gray-400">No image</span>
+                        <ProductImagePlaceholder />
                       )}
                     </div>
 

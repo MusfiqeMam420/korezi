@@ -7,6 +7,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/app/context/CartContext";
 import { useAuth } from "@/app/context/AuthContext";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
+
 /* Icons */
 function IconSearch(props: any) {
   return (
@@ -32,6 +34,20 @@ function IconCart(props: any) {
 
   );
 }
+function IconX(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M6.75 6.75L17.25 17.25M17.25 6.75L6.75 17.25" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconPlus(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M12 5.5V18.5M5.5 12H18.5" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 /* Types */
 type SuggestProduct = {
@@ -52,6 +68,13 @@ type SuggestResponse = {
   products: SuggestProduct[];
 };
 
+type Category = {
+  _id: string;
+  name: string;
+  image?: string;
+  subcategories?: { _id?: string; name: string; children?: { _id?: string; name: string }[] }[];
+};
+
 function useDebouncedValue<T>(value: T, delay = 250) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -68,6 +91,12 @@ export default function Navbar() {
   const [openSearch, setOpenSearch] = useState(false);
   const [q, setQ] = useState("");
   const [openMenu, setOpenMenu] = useState(false);
+  const [megaOpen, setMegaOpen] = useState(false);
+  const [activeMegaCategory, setActiveMegaCategory] = useState("");
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
+  const [openMobileMain, setOpenMobileMain] = useState("");
+  const [openMobileSub, setOpenMobileSub] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const overlayPanelRef = useRef<HTMLDivElement | null>(null);
@@ -79,6 +108,23 @@ export default function Navbar() {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const dq = useDebouncedValue(q, 250);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(`${API_BASE}/api/categories`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => {
+        if (!cancelled) setCategories(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (!cancelled) setCategories([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // account menu outside click close
   useEffect(() => {
@@ -112,8 +158,17 @@ export default function Navbar() {
     };
   }, [openSearch]);
 
+  useEffect(() => {
+    if (!mobileCategoriesOpen) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileCategoriesOpen]);
+
   function openSearchOverlay() {
     setOpenMenu(false);
+    setMobileCategoriesOpen(false);
     setOpenSearch(true);
   }
 
@@ -195,6 +250,23 @@ export default function Navbar() {
     return [...tagItems, ...prodItems];
   }, [tags, products]);
 
+  const menuCategories = useMemo(() => {
+    const fallback: Category[] = [
+      { _id: "skin", name: "Skin", subcategories: [{ name: "Cleanser" }, { name: "Sunscreen" }, { name: "Moisturizers" }, { name: "Serums & Oils" }, { name: "Toners" }] },
+      { _id: "makeup", name: "Makeup", subcategories: [{ name: "Face" }, { name: "Lip Care" }, { name: "Eye Care" }] },
+      { _id: "hair", name: "Hair", subcategories: [{ name: "Hair Care" }, { name: "Hair Serum" }, { name: "Scalp Care" }] },
+      { _id: "body", name: "Personal care", subcategories: [{ name: "Hand Creams" }, { name: "Body Butter" }, { name: "Deodorants" }] },
+      { _id: "mom", name: "Mom & Baby", subcategories: [{ name: "Baby Care" }, { name: "Mom Care" }] },
+      { _id: "fragrance", name: "Fragrance", subcategories: [{ name: "Mist" }, { name: "Perfume" }] },
+    ];
+
+    return (categories.length ? categories : fallback).slice(0, 6);
+  }, [categories]);
+
+  const activeMega = useMemo(() => {
+    return menuCategories.find((category) => category.name === activeMegaCategory) || menuCategories[0] || null;
+  }, [activeMegaCategory, menuCategories]);
+
   function goToItem(i: number) {
     const item = flatItems[i];
     if (!item) return;
@@ -248,7 +320,7 @@ export default function Navbar() {
       scale: 1,
       filter: "blur(0px)",
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 520,
         damping: 32,
         mass: 0.9,
@@ -275,21 +347,66 @@ export default function Navbar() {
     exit: { opacity: 0, y: 6, transition: { duration: 0.12 } },
   };
 
+  const mobileDrawerList = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.045, delayChildren: 0.08 } },
+  };
+
+  const mobileDrawerItem = {
+    hidden: { opacity: 0, x: -14 },
+    show: { opacity: 1, x: 0, transition: { duration: 0.22 } },
+  };
+
+  const mobileAccordion = {
+    hidden: { height: 0, opacity: 0 },
+    show: { height: "auto", opacity: 1, transition: { duration: 0.24, ease: "easeOut" as const } },
+    exit: { height: 0, opacity: 0, transition: { duration: 0.18, ease: "easeIn" as const } },
+  };
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between sm:px-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/kz-logo.svg"
-              alt="Korezi"
-              width={120}
-              height={32}
-              priority
-              className="h-8 w-auto"
-            />
-          </Link>
+          <div className="flex items-center gap-3">
+            <motion.button
+              type="button"
+              onClick={() => {
+                setMobileCategoriesOpen(true);
+                setOpenMenu(false);
+              }}
+              className="grid h-10 w-10 place-items-center rounded-xl lg:hidden"
+              aria-label="Open menu"
+              whileTap={{ scale: 0.92 }}
+              whileHover={{ y: -1 }}
+            >
+              <span className="grid gap-1.5">
+                <motion.span
+                  className="block h-0.5 w-5 rounded-full bg-gray-900"
+                  animate={mobileCategoriesOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+                />
+                <motion.span
+                  className="block h-0.5 w-5 rounded-full bg-gray-900"
+                  animate={mobileCategoriesOpen ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }}
+                />
+                <motion.span
+                  className="block h-0.5 w-5 rounded-full bg-gray-900"
+                  animate={mobileCategoriesOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+                />
+              </span>
+            </motion.button>
+
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/kz-logo.svg"
+                alt="Korezi"
+                width={120}
+                height={32}
+                priority
+                className="h-8 w-auto"
+              />
+            </Link>
+          </div>
 
           {/* <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600">
             <Link className="hover:text-black" href="/shop">
@@ -398,7 +515,231 @@ export default function Navbar() {
           
           </div>
         </div>
+
+        <div className="hidden border-t border-gray-100 bg-white/95 lg:block" onMouseLeave={() => setMegaOpen(false)}>
+          <div className="mx-auto flex max-w-7xl items-center gap-5 px-6">
+            <nav className="flex min-w-0 flex-1 items-center gap-1">
+              {menuCategories.map((category, index) => (
+                <Link
+                  key={category._id || category.name}
+                  href={`/shop?category=${encodeURIComponent(category.name)}`}
+                  onMouseEnter={() => {
+                    setActiveMegaCategory(category.name);
+                    setMegaOpen(true);
+                  }}
+                  className={[
+                    "px-4 py-3 text-sm font-medium transition hover:text-[#BE171F]",
+                    activeMega?.name === category.name || (!activeMegaCategory && index === 0) ? "text-[#BE171F]" : "text-gray-900",
+                  ].join(" ")}
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </nav>
+
+          </div>
+
+          {megaOpen && activeMega && (
+            <div className="absolute left-0 right-0 top-full z-50 border-t border-gray-100 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.14)]">
+              <div className="mx-auto grid max-w-7xl grid-cols-6 px-6">
+                {(activeMega.subcategories || []).slice(0, 5).map((sub, index) => (
+                  <div key={`${activeMega.name}-${sub.name}`} className={["min-h-[330px] px-4 py-4", index % 2 ? "bg-gray-50/80" : "bg-white"].join(" ")}>
+                    <Link
+                      href={`/shop?category=${encodeURIComponent(activeMega.name)}&subCategory=${encodeURIComponent(sub.name)}`}
+                      className="text-sm font-extrabold uppercase tracking-wide text-black hover:text-[#BE171F]"
+                    >
+                      {sub.name}
+                    </Link>
+                    <div className="mt-3 grid gap-2">
+                      {sub.children?.length ? (
+                        sub.children.slice(0, 14).map((child) => (
+                          <Link
+                            key={`${sub.name}-${child.name}`}
+                            href={`/shop?category=${encodeURIComponent(activeMega.name)}&subCategory=${encodeURIComponent(sub.name)}&thirdCategory=${encodeURIComponent(child.name)}`}
+                            className="text-sm text-gray-700 transition hover:text-[#BE171F]"
+                          >
+                            {child.name}
+                          </Link>
+                        ))
+                      ) : (
+                        <Link href={`/shop?category=${encodeURIComponent(activeMega.name)}&subCategory=${encodeURIComponent(sub.name)}`} className="text-sm text-gray-700 transition hover:text-[#BE171F]">
+                          Shop all {sub.name}
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {(!activeMega.subcategories || activeMega.subcategories.length === 0) && (
+                  <div className="min-h-[330px] px-4 py-4">
+                    <Link href={`/shop?category=${encodeURIComponent(activeMega.name)}`} className="text-sm font-extrabold uppercase tracking-wide text-black hover:text-[#BE171F]">
+                      Shop all {activeMega.name}
+                    </Link>
+                  </div>
+                )}
+
+              </div>
+            </div>
+          )}
+        </div>
       </header>
+
+      <AnimatePresence>
+        {mobileCategoriesOpen && (
+          <motion.div
+            className="fixed inset-0 z-[70] lg:hidden"
+            initial="hidden"
+            animate="show"
+            exit="exit"
+          >
+            <motion.button
+              type="button"
+              className="absolute inset-0 bg-black/60"
+              aria-label="Close menu"
+              onClick={() => setMobileCategoriesOpen(false)}
+              variants={overlayFade}
+            />
+            <motion.aside
+              initial={{ x: "-104%", filter: "blur(4px)" }}
+              animate={{ x: 0, filter: "blur(0px)" }}
+              exit={{ x: "-104%", filter: "blur(4px)" }}
+              transition={{ type: "spring", stiffness: 460, damping: 36, mass: 0.9 }}
+              className="relative h-full w-[82vw] max-w-[340px] overflow-hidden bg-white shadow-2xl"
+            >
+              <div className="flex h-16 items-center justify-between border-b px-5">
+                <p className="text-sm font-semibold">Menu</p>
+                <motion.button
+                  type="button"
+                  onClick={() => setMobileCategoriesOpen(false)}
+                  className="grid h-10 w-10 place-items-center rounded-full text-[#BE171F]"
+                  aria-label="Close menu"
+                  whileTap={{ scale: 0.9, rotate: 8 }}
+                  whileHover={{ rotate: 90 }}
+                >
+                  <IconX className="h-6 w-6" />
+                </motion.button>
+              </div>
+
+              <motion.div
+                className="h-[calc(100%-64px)] overflow-y-auto px-4 py-4"
+                variants={mobileDrawerList}
+              >
+                {menuCategories.map((category) => {
+                  const mainOpen = openMobileMain === category.name;
+                  return (
+                    <motion.div
+                      key={category._id || category.name}
+                      variants={mobileDrawerItem}
+                      className="border-b border-gray-100 py-1 last:border-b-0"
+                    >
+                      <div className="flex items-center gap-2">
+                        <motion.button
+                          type="button"
+                          onClick={() => {
+                            setOpenMobileMain(mainOpen ? "" : category.name);
+                            setOpenMobileSub("");
+                          }}
+                          className="flex flex-1 items-center justify-between py-2.5 text-left text-[15px] font-medium text-gray-950"
+                          whileTap={{ scale: 0.99 }}
+                        >
+                          <span>{category.name}</span>
+                          <motion.span
+                            className="grid h-7 w-7 place-items-center rounded-full bg-gray-50"
+                            animate={{ rotate: mainOpen ? 45 : 0, color: mainOpen ? "#BE171F" : "#111827" }}
+                            transition={{ duration: 0.18 }}
+                          >
+                            <IconPlus className="h-4 w-4" />
+                          </motion.span>
+                        </motion.button>
+                      </div>
+
+                      <AnimatePresence initial={false}>
+                        {mainOpen && (
+                        <motion.div
+                          variants={mobileAccordion}
+                          initial="hidden"
+                          animate="show"
+                          exit="exit"
+                          className="overflow-hidden"
+                        >
+                        <div className="pb-2 pl-4">
+                          <Link
+                            href={`/shop?category=${encodeURIComponent(category.name)}`}
+                            onClick={() => setMobileCategoriesOpen(false)}
+                            className="block py-2 text-sm font-medium text-[#BE171F]"
+                          >
+                            Shop all {category.name}
+                          </Link>
+
+                          {(category.subcategories || []).map((sub) => {
+                            const subKey = `${category.name}:${sub.name}`;
+                            const subOpen = openMobileSub === subKey;
+                            return (
+                              <div key={subKey}>
+                                <div className="flex items-center">
+                                  <motion.button
+                                    type="button"
+                                    onClick={() => setOpenMobileSub(subOpen ? "" : subKey)}
+                                    className="flex flex-1 items-center justify-between py-2 text-left text-sm text-gray-700"
+                                    whileTap={{ scale: 0.99 }}
+                                  >
+                                    <span>{sub.name}</span>
+                                    <motion.span
+                                      className="grid h-6 w-6 place-items-center rounded-full bg-gray-50"
+                                      animate={{ rotate: subOpen ? 45 : 0, color: subOpen ? "#BE171F" : "#374151" }}
+                                      transition={{ duration: 0.18 }}
+                                    >
+                                      <IconPlus className="h-3.5 w-3.5" />
+                                    </motion.span>
+                                  </motion.button>
+                                </div>
+
+                                <AnimatePresence initial={false}>
+                                  {subOpen && (
+                                  <motion.div
+                                    variants={mobileAccordion}
+                                    initial="hidden"
+                                    animate="show"
+                                    exit="exit"
+                                    className="overflow-hidden"
+                                  >
+                                  <div className="pb-1 pl-4">
+                                    <Link
+                                      href={`/shop?category=${encodeURIComponent(category.name)}&subCategory=${encodeURIComponent(sub.name)}`}
+                                      onClick={() => setMobileCategoriesOpen(false)}
+                                      className="block py-1.5 text-sm font-medium text-[#BE171F]"
+                                    >
+                                      Shop all {sub.name}
+                                    </Link>
+                                    {sub.children?.map((child) => (
+                                      <Link
+                                        key={`${subKey}:${child.name}`}
+                                        href={`/shop?category=${encodeURIComponent(category.name)}&subCategory=${encodeURIComponent(sub.name)}&thirdCategory=${encodeURIComponent(child.name)}`}
+                                        onClick={() => setMobileCategoriesOpen(false)}
+                                        className="block py-1.5 text-sm text-gray-500"
+                                      >
+                                        {child.name}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                  </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            </motion.aside>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* SEARCH OVERLAY (LIVELY + OUTSIDE CLICK CLOSE) */}
       <AnimatePresence>

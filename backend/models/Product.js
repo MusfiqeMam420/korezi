@@ -6,29 +6,50 @@ const productSchema = new mongoose.Schema(
     slug: { type: String, required: true, unique: true, index: true },
 
     brand: { type: String },
-    
-     mrp: { type: Number, required: true },          // ✅ Regular / MRP
-    price: { type: Number, required: true },
+
+    regularPrice: { type: Number, required: true },
+    salePrice: { type: Number, default: null },
+
+    // Legacy aliases kept for older documents and admin views.
+    mrp: { type: Number },
+    price: { type: Number },
 
     stock: { type: Number, default: 0 },
-
     category: { type: String },
-    
+    subCategory: { type: String },
+    thirdCategory: { type: String },
 
-    // ✅ arrays (matches frontend)
     skinType: [String],
     concerns: [String],
     tags: [String],
 
     images: [String],
+    video: { type: String, default: "" },
+    videoLikes: { type: Number, default: 0, min: 0 },
     description: { type: String },
   },
   { timestamps: true }
 );
 
-productSchema.index({ name: "text", brand: "text", category: "text" });
+productSchema.pre("validate", function normalizePrices() {
+  if (this.regularPrice == null && this.mrp != null) {
+    this.regularPrice = this.mrp;
+  }
+
+  if (this.mrp == null && this.regularPrice != null) {
+    this.mrp = this.regularPrice;
+  }
+
+  if (this.price == null && this.regularPrice != null) {
+    this.price = this.salePrice != null ? this.salePrice : this.regularPrice;
+  }
+});
+
+productSchema.index({ name: "text", brand: "text", category: "text", subCategory: "text", thirdCategory: "text" });
 productSchema.index({ brand: 1 });
 productSchema.index({ category: 1 });
+productSchema.index({ subCategory: 1 });
+productSchema.index({ thirdCategory: 1 });
 productSchema.index({ skinType: 1 });
 
 module.exports = mongoose.model("Product", productSchema);
