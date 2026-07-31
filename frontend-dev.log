@@ -4,17 +4,184 @@
 
 ▲ Next.js 16.1.6 (Turbopack)
 - Local:         http://localhost:3000
-- Network:       http://192.168.0.102:3000
+- Network:       http://192.168.0.104:3000
 - Environments: .env.local
 
 ✓ Starting...
-✓ Ready in 1602ms
- GET /shop 200 in 1249ms (compile: 866ms, render: 383ms)
- GET /shop 200 in 70ms (compile: 14ms, render: 56ms)
- GET /cart 200 in 133ms (compile: 83ms, render: 51ms)
- GET / 200 in 72ms (compile: 49ms, render: 23ms)
- GET / 200 in 125ms (compile: 9ms, render: 115ms)
- GET / 200 in 103ms (compile: 9ms, render: 95ms)
- GET / 200 in 129ms (compile: 14ms, render: 115ms)
- GET / 200 in 111ms (compile: 10ms, render: 101ms)
-✓ Compiled in 165ms
+✓ Ready in 1993ms
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 1501ms (compile: 1185ms, render: 317ms)
+ GET /api/search/suggest?q=s 200 in 297ms (compile: 181ms, render: 116ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 118ms (compile: 29ms, render: 90ms)
+ GET /api/search/suggest?q=s 200 in 89ms (compile: 10ms, render: 79ms)
+ GET /api/search/suggest?q=se 200 in 78ms (compile: 6ms, render: 72ms)
+✓ Compiled in 500ms
+✓ Compiled in 113ms
+✓ Compiled in 103ms
+✓ Compiled in 138ms
+✓ Compiled in 110ms
+✓ Compiled in 120ms
+✓ Compiled in 110ms
+✓ Compiled in 125ms
+✓ Compiled in 119ms
+✓ Compiled in 136ms
+✓ Compiled in 207ms
+✓ Compiled in 181ms
+✓ Compiled in 88ms
+✓ Compiled in 91ms
+✓ Compiled in 98ms
+✓ Compiled in 94ms
+✓ Compiled in 108ms
+✓ Compiled in 215ms
+✓ Compiled in 108ms
+✓ Compiled in 104ms
+✓ Compiled in 111ms
+✓ Compiled in 109ms
+✓ Compiled in 122ms
+✓ Compiled in 267ms
+✓ Compiled in 119ms
+✓ Compiled in 148ms
+✓ Compiled in 220ms
+✓ Compiled in 120ms
+✓ Compiled in 90ms
+✓ Compiled in 124ms
+✓ Compiled in 117ms
+✓ Compiled in 243ms
+✓ Compiled in 161ms
+✓ Compiled in 264ms
+✓ Compiled in 100ms
+✓ Compiled in 107ms
+✓ Compiled in 92ms
+✓ Compiled in 118ms
+✓ Compiled in 137ms
+✓ Compiled in 183ms
+✓ Compiled in 122ms
+✓ Compiled in 78ms
+✓ Compiled in 121ms
+✓ Compiled in 122ms
+✓ Compiled in 114ms
+✓ Compiled in 149ms
+✓ Compiled in 111ms
+✓ Compiled in 195ms
+✓ Compiled in 204ms
+✓ Compiled in 103ms
+✓ Compiled in 113ms
+✓ Compiled in 247ms
+✓ Compiled in 141ms
+✓ Compiled in 108ms
+✓ Compiled in 108ms
+✓ Compiled in 108ms
+✓ Compiled in 111ms
+✓ Compiled in 292ms
+✓ Compiled in 254ms
+✓ Compiled in 303ms
+✓ Compiled in 166ms
+✓ Compiled in 299ms
+✓ Compiled in 90ms
+✓ Compiled in 121ms
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 382ms (compile: 144ms, render: 238ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 200ms (compile: 141ms, render: 59ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 302ms (compile: 55ms, render: 247ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 203ms (compile: 142ms, render: 61ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 172ms (compile: 120ms, render: 52ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 224ms (compile: 132ms, render: 92ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 267ms (compile: 109ms, render: 158ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 127ms (compile: 17ms, render: 110ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 102ms (compile: 7ms, render: 95ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 111ms (compile: 6ms, render: 105ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 128ms (compile: 6ms, render: 122ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 137ms (compile: 7ms, render: 130ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 131ms (compile: 8ms, render: 123ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 120ms (compile: 8ms, render: 112ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 107ms (compile: 6ms, render: 101ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 82ms (compile: 8ms, render: 74ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 87ms (compile: 6ms, render: 80ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 82ms (compile: 16ms, render: 66ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 105ms (compile: 8ms, render: 97ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 110ms (compile: 7ms, render: 103ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 113ms (compile: 6ms, render: 107ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 128ms (compile: 6ms, render: 122ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 151ms (compile: 7ms, render: 144ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 173ms (compile: 10ms, render: 163ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 170ms (compile: 10ms, render: 160ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 180ms (compile: 12ms, render: 167ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 169ms (compile: 9ms, render: 160ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 173ms (compile: 17ms, render: 157ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 187ms (compile: 9ms, render: 179ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 228ms (compile: 18ms, render: 210ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 232ms (compile: 15ms, render: 217ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 252ms (compile: 15ms, render: 237ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 221ms (compile: 11ms, render: 210ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 188ms (compile: 20ms, render: 168ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 164ms (compile: 18ms, render: 146ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 139ms (compile: 11ms, render: 128ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 119ms (compile: 9ms, render: 110ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 131ms (compile: 7ms, render: 124ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 128ms (compile: 7ms, render: 121ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 128ms (compile: 17ms, render: 111ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 112ms (compile: 7ms, render: 104ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 107ms (compile: 8ms, render: 99ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 108ms (compile: 6ms, render: 102ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 108ms (compile: 6ms, render: 102ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 116ms (compile: 7ms, render: 108ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 115ms (compile: 6ms, render: 109ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 113ms (compile: 6ms, render: 107ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 106ms (compile: 7ms, render: 98ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 106ms (compile: 6ms, render: 99ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 105ms (compile: 7ms, render: 98ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 76ms (compile: 7ms, render: 69ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 84ms (compile: 6ms, render: 77ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 79ms (compile: 16ms, render: 63ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 35ms (compile: 7ms, render: 28ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 280ms (compile: 111ms, render: 168ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 138ms (compile: 15ms, render: 123ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 111ms (compile: 7ms, render: 104ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 113ms (compile: 6ms, render: 107ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 109ms (compile: 6ms, render: 103ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 119ms (compile: 6ms, render: 113ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 116ms (compile: 7ms, render: 108ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 116ms (compile: 8ms, render: 108ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 81ms (compile: 7ms, render: 74ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 108ms (compile: 6ms, render: 102ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 124ms (compile: 10ms, render: 114ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 119ms (compile: 6ms, render: 113ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 93ms (compile: 20ms, render: 73ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 101ms (compile: 6ms, render: 95ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 101ms (compile: 7ms, render: 94ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 118ms (compile: 7ms, render: 112ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 126ms (compile: 5ms, render: 121ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 151ms (compile: 10ms, render: 141ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 120ms (compile: 9ms, render: 111ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 129ms (compile: 9ms, render: 120ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 174ms (compile: 18ms, render: 157ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 177ms (compile: 9ms, render: 168ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 196ms (compile: 11ms, render: 184ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 139ms (compile: 11ms, render: 128ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 162ms (compile: 19ms, render: 142ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 323ms (compile: 14ms, render: 310ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 264ms (compile: 71ms, render: 192ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 232ms (compile: 14ms, render: 218ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 156ms (compile: 16ms, render: 140ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 216ms (compile: 18ms, render: 198ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 217ms (compile: 55ms, render: 162ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 124ms (compile: 10ms, render: 114ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 131ms (compile: 10ms, render: 120ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 128ms (compile: 8ms, render: 120ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 127ms (compile: 17ms, render: 110ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 112ms (compile: 11ms, render: 101ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 110ms (compile: 7ms, render: 103ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 104ms (compile: 7ms, render: 98ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 102ms (compile: 6ms, render: 96ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 95ms (compile: 6ms, render: 90ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 98ms (compile: 7ms, render: 91ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 98ms (compile: 6ms, render: 92ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 97ms (compile: 6ms, render: 91ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 100ms (compile: 6ms, render: 94ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 87ms (compile: 6ms, render: 81ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 87ms (compile: 6ms, render: 81ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 114ms (compile: 7ms, render: 107ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 114ms (compile: 17ms, render: 97ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 64ms (compile: 7ms, render: 57ms)
+ GET /product/isntree-hyaluronic-acid-watery-sun-gel-spf50-pa-50ml 200 in 32ms (compile: 6ms, render: 26ms)
+ GET / 200 in 108ms (compile: 77ms, render: 31ms)
+ GET / 200 in 259ms (compile: 8ms, render: 251ms)
+ GET /login 200 in 64ms (compile: 38ms, render: 26ms)

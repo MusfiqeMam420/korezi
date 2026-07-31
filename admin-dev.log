@@ -1,16 +1,61 @@
 
 > admin@0.1.0 dev
-> next dev
+> next dev -p 3001
 
 ▲ Next.js 16.1.6 (Turbopack)
 - Local:         http://localhost:3001
-- Network:       http://192.168.0.102:3001
+- Network:       http://192.168.0.104:3001
 - Environments: .env.local
 
 ✓ Starting...
-✓ Ready in 1437ms
- GET /categories 200 in 833ms (compile: 687ms, render: 146ms)
-✓ Compiled in 127ms
-✓ Compiled in 128ms
- GET /products 200 in 98ms (compile: 64ms, render: 34ms)
- GET /orders 200 in 156ms (compile: 129ms, render: 27ms)
+✓ Ready in 1284ms
+ GET /brands 200 in 418ms (compile: 273ms, render: 145ms)
+ GET /brands 200 in 112ms (compile: 15ms, render: 97ms)
+ GET /brands 200 in 67ms (compile: 14ms, render: 53ms)
+✓ Compiled in 472ms
+✓ Compiled in 105ms
+✓ Compiled in 212ms
+ GET /categories 200 in 203ms (compile: 164ms, render: 39ms)
+ GET /categories 200 in 1644ms (compile: 15ms, render: 1628ms)
+✓ Compiled in 1262ms
+ GET /categories 200 in 381ms (compile: 330ms, render: 51ms)
+ GET /categories 200 in 108ms (compile: 11ms, render: 97ms)
+ GET /categories 200 in 137ms (compile: 11ms, render: 126ms)
+ GET /categories 200 in 176ms (compile: 25ms, render: 151ms)
+ GET /categories 200 in 106ms (compile: 12ms, render: 94ms)
+ GET /categories 200 in 64ms (compile: 10ms, render: 54ms)
+ GET /categories 200 in 335ms (compile: 15ms, render: 321ms)
+ GET /categories 200 in 235ms (compile: 125ms, render: 110ms)
+ GET /categories 200 in 40ms (compile: 8ms, render: 32ms)
+ GET /categories 200 in 33ms (compile: 7ms, render: 25ms)
+ GET /categories 200 in 109ms (compile: 8ms, render: 101ms)
+ GET /categories 200 in 109ms (compile: 8ms, render: 101ms)
+ GET /categories 200 in 135ms (compile: 6ms, render: 129ms)
+ GET /categories 200 in 145ms (compile: 11ms, render: 134ms)
+ GET /categories 200 in 144ms (compile: 10ms, render: 134ms)
+ GET /categories 200 in 152ms (compile: 7ms, render: 145ms)
+ GET /categories 200 in 146ms (compile: 7ms, render: 138ms)
+ GET /categories 200 in 147ms (compile: 7ms, render: 140ms)
+ GET /categories 200 in 122ms (compile: 9ms, render: 114ms)
+ GET /categories 200 in 119ms (compile: 8ms, render: 111ms)
+ GET /categories 200 in 129ms (compile: 9ms, render: 121ms)
+ GET /categories 200 in 131ms (compile: 16ms, render: 115ms)
+ GET /categories 200 in 121ms (compile: 9ms, render: 112ms)
+ GET /categories 200 in 114ms (compile: 8ms, render: 105ms)
+ GET /categories 200 in 117ms (compile: 10ms, render: 107ms)
+ GET /categories 200 in 115ms (compile: 9ms, render: 106ms)
+ GET /categories 200 in 81ms (compile: 10ms, render: 70ms)
+ GET /categories 200 in 40ms (compile: 11ms, render: 29ms)
+ GET /categories 200 in 173ms (compile: 99ms, render: 74ms)
+ GET /categories 200 in 43ms (compile: 15ms, render: 28ms)
+ GET /categories 200 in 110ms (compile: 9ms, render: 101ms)
+ GET /categories 200 in 55ms (compile: 7ms, render: 48ms)
+ GET /categories 200 in 52ms (compile: 5ms, render: 47ms)
+ GET /products 200 in 419ms (compile: 390ms, render: 29ms)
+ GET /products 200 in 24ms (compile: 5ms, render: 18ms)
+ GET /products 200 in 60ms (compile: 10ms, render: 50ms)
+ GET /products 200 in 63ms (compile: 6ms, render: 57ms)
+✓ Compiled in 25ms
+ GET /products 200 in 202ms (compile: 149ms, render: 52ms)
+ GET /products 200 in 93ms (compile: 26ms, render: 68ms)
+ GET /products 200 in 34ms (compile: 6ms, render: 28ms)
