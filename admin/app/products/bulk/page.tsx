@@ -65,13 +65,14 @@ export default function BulkProductUploadPage() {
   const { success, error, info } = useToast();
   const [sheetUrl, setSheetUrl] = useState("");
   const [csvText, setCsvText] = useState("");
+  const [sheetFile, setSheetFile] = useState<File | null>(null);
   const [importImages, setImportImages] = useState(true);
   const [upsert, setUpsert] = useState(true);
   const [loading, setLoading] = useState<"preview" | "import" | null>(null);
   const [preview, setPreview] = useState<PreviewResult | null>(null);
   const [result, setResult] = useState<ImportResult | null>(null);
 
-  const hasSource = useMemo(() => sheetUrl.trim() || csvText.trim(), [sheetUrl, csvText]);
+  const hasSource = useMemo(() => sheetUrl.trim() || csvText.trim() || sheetFile, [sheetUrl, csvText, sheetFile]);
 
   async function runBulkImport(dryRun: boolean) {
     if (!hasSource) {
@@ -84,18 +85,32 @@ export default function BulkProductUploadPage() {
     if (dryRun) setPreview(null);
 
     try {
-      const res = await fetch(`${API_BASE}/api/products/bulk-import`, {
+      const requestInit: RequestInit = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
+      };
+
+      if (sheetFile) {
+        const formData = new FormData();
+        formData.append("file", sheetFile);
+        formData.append("sheetUrl", sheetUrl.trim());
+        formData.append("csvText", csvText.trim());
+        formData.append("importImages", String(importImages));
+        formData.append("dryRun", String(dryRun));
+        formData.append("mode", upsert ? "upsert" : "create");
+        requestInit.body = formData;
+      } else {
+        requestInit.headers = { "Content-Type": "application/json" };
+        requestInit.body = JSON.stringify({
           sheetUrl: sheetUrl.trim(),
           csvText: csvText.trim(),
           importImages,
           dryRun,
           mode: upsert ? "upsert" : "create",
-        }),
-      });
+        });
+      }
+
+      const res = await fetch(`${API_BASE}/api/products/bulk-import`, requestInit);
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Bulk upload failed.");
@@ -121,7 +136,7 @@ export default function BulkProductUploadPage() {
           <p className="text-xs font-bold uppercase tracking-wide text-red-600">Catalog</p>
           <h1 className="text-3xl font-bold tracking-tight">Bulk Product Upload</h1>
           <p className="mt-2 max-w-2xl text-sm text-gray-600">
-            Import products from Google Sheets. Public image URLs are downloaded and converted to WebP automatically.
+            Import products from XLSX, CSV, or Google Sheets. Public image URLs are downloaded and converted to WebP automatically.
           </p>
         </div>
         <div className="flex gap-3">
@@ -141,7 +156,33 @@ export default function BulkProductUploadPage() {
             Share the Google Sheet as anyone with link can view, then paste the sheet URL here.
           </p>
 
-          <label className="mt-5 block text-sm font-semibold" htmlFor="sheet-url">
+          <label className="mt-5 block text-sm font-semibold" htmlFor="sheet-file">
+            Upload sheet file
+          </label>
+          <input
+            id="sheet-file"
+            type="file"
+            accept=".xlsx,.xls,.csv,.txt,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            onChange={(event) => setSheetFile(event.target.files?.[0] || null)}
+            className="mt-2 w-full rounded-xl border px-4 py-3 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-black file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+          />
+          {sheetFile ? (
+            <button
+              type="button"
+              onClick={() => setSheetFile(null)}
+              className="mt-2 text-xs font-semibold text-red-600 hover:text-black"
+            >
+              Remove selected file: {sheetFile.name}
+            </button>
+          ) : null}
+
+          <div className="my-5 flex items-center gap-3">
+            <span className="h-px flex-1 bg-gray-200" />
+            <span className="text-xs font-bold uppercase text-gray-400">or</span>
+            <span className="h-px flex-1 bg-gray-200" />
+          </div>
+
+          <label className="block text-sm font-semibold" htmlFor="sheet-url">
             Google Sheet link
           </label>
           <input

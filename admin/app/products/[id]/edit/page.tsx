@@ -88,21 +88,28 @@ export default function EditProductPage() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState("");
   const [saveStep, setSaveStep] = useState("");
+  const [dragCurrentImage, setDragCurrentImage] = useState("");
+  const [dragSelectedImageIndex, setDragSelectedImageIndex] = useState<number | null>(null);
 
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const videoInputRef = useRef<HTMLInputElement | null>(null);
+  const imagePreviewsRef = useRef<string[]>([]);
+  const videoPreviewRef = useRef("");
 
   useEffect(() => {
-    return () => {
-      imagePreviews.forEach((preview) => URL.revokeObjectURL(preview));
-    };
+    imagePreviewsRef.current = imagePreviews;
   }, [imagePreviews]);
 
   useEffect(() => {
-    return () => {
-      if (videoPreview) URL.revokeObjectURL(videoPreview);
-    };
+    videoPreviewRef.current = videoPreview;
   }, [videoPreview]);
+
+  useEffect(() => {
+    return () => {
+      imagePreviewsRef.current.forEach((preview) => URL.revokeObjectURL(preview));
+      if (videoPreviewRef.current) URL.revokeObjectURL(videoPreviewRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -183,6 +190,29 @@ export default function EditProductPage() {
     setImageFiles([]);
     setImagePreviews([]);
     if (imageInputRef.current) imageInputRef.current.value = "";
+  }
+
+  function moveItem<T>(items: T[], fromIndex: number, toIndex: number) {
+    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return items;
+    const copy = [...items];
+    const [moved] = copy.splice(fromIndex, 1);
+    copy.splice(toIndex, 0, moved);
+    return copy;
+  }
+
+  function reorderCurrentImage(source: string, target: string) {
+    if (!source || source === target) return;
+    const list = imageTextToList(imagesText);
+    const fromIndex = list.indexOf(source);
+    const toIndex = list.indexOf(target);
+    setImagesText(moveItem(list, fromIndex, toIndex).join("\n"));
+  }
+
+  function reorderSelectedImages(targetIndex: number) {
+    if (dragSelectedImageIndex == null || dragSelectedImageIndex === targetIndex) return;
+    setImageFiles((prev) => moveItem(prev, dragSelectedImageIndex, targetIndex));
+    setImagePreviews((prev) => moveItem(prev, dragSelectedImageIndex, targetIndex));
+    setDragSelectedImageIndex(null);
   }
 
   function selectVideo(file: File | undefined) {
@@ -424,7 +454,27 @@ export default function EditProductPage() {
               {imagePreviews.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
                   {imagePreviews.map((src, index) => (
-                    <div key={src} className="overflow-hidden rounded-xl border bg-white">
+                    <div
+                      key={src}
+                      draggable
+                      onDragStart={(event) => {
+                        event.dataTransfer.effectAllowed = "move";
+                        setDragSelectedImageIndex(index);
+                      }}
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = "move";
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        reorderSelectedImages(index);
+                      }}
+                      onDragEnd={() => setDragSelectedImageIndex(null)}
+                      className={[
+                        "overflow-hidden rounded-xl border bg-white transition cursor-move",
+                        dragSelectedImageIndex === index ? "ring-2 ring-red-500 opacity-70" : "hover:border-red-300",
+                      ].join(" ")}
+                    >
                       <img src={src} alt="" className="aspect-square w-full object-cover" />
                       <p className="truncate px-3 py-2 text-xs text-gray-500">{imageFiles[index]?.name}</p>
                     </div>
@@ -434,10 +484,40 @@ export default function EditProductPage() {
             </div>
             {images.length > 0 && (
               <div className="mt-4">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Current Images</p>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Current Images - drag to reorder saved image URLs
+                </p>
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                {images.map((src) => (
-                  <img key={src} src={src} alt="" className="aspect-square rounded-xl border object-cover" />
+                {images.map((src, index) => (
+                  <div
+                    key={`${src}-${index}`}
+                    draggable
+                    onDragStart={(event) => {
+                      event.dataTransfer.effectAllowed = "move";
+                      setDragCurrentImage(src);
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      event.dataTransfer.dropEffect = "move";
+                    }}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      reorderCurrentImage(dragCurrentImage, src);
+                      setDragCurrentImage("");
+                    }}
+                    onDragEnd={() => setDragCurrentImage("")}
+                    className={[
+                      "relative overflow-hidden rounded-xl border bg-white transition cursor-move",
+                      dragCurrentImage === src ? "ring-2 ring-red-500 opacity-70" : "hover:border-red-300",
+                    ].join(" ")}
+                  >
+                    <img src={src} alt="" className="aspect-square w-full object-cover" />
+                    {index === 0 && (
+                      <span className="absolute left-2 top-2 rounded-full bg-green-50 px-2 py-1 text-[11px] font-semibold text-green-700">
+                        Cover
+                      </span>
+                    )}
+                  </div>
                 ))}
                 </div>
               </div>

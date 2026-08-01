@@ -53,6 +53,7 @@ export default function UploadProductPage() {
   const [loading, setLoading] = useState(false);
   const [stage, setStage] = useState<SubmitStage>("idle");
   const [dragging, setDragging] = useState(false);
+  const [dragImageId, setDragImageId] = useState("");
 
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
@@ -187,6 +188,21 @@ export default function UploadProductPage() {
 
       const copy = [...prev];
       [copy[index], copy[nextIndex]] = [copy[nextIndex], copy[index]];
+      return copy;
+    });
+  }
+
+  function reorderImage(dragId: string, targetId: string) {
+    if (!dragId || dragId === targetId) return;
+
+    setImages((prev) => {
+      const fromIndex = prev.findIndex((img) => img.id === dragId);
+      const toIndex = prev.findIndex((img) => img.id === targetId);
+      if (fromIndex < 0 || toIndex < 0) return prev;
+
+      const copy = [...prev];
+      const [moved] = copy.splice(fromIndex, 1);
+      copy.splice(toIndex, 0, moved);
       return copy;
     });
   }
@@ -560,9 +576,37 @@ export default function UploadProductPage() {
               </div>
 
               {images.length > 0 && (
-                <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Drag images to reorder. First image is the cover.
+                </p>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   {images.map((img, index) => (
-                    <div key={img.id} className="overflow-hidden rounded-xl border bg-white">
+                    <div
+                      key={img.id}
+                      draggable
+                      onDragStart={(e) => {
+                        e.stopPropagation();
+                        setDragImageId(img.id);
+                        e.dataTransfer.effectAllowed = "move";
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.dataTransfer.dropEffect = "move";
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        reorderImage(dragImageId, img.id);
+                        setDragImageId("");
+                      }}
+                      onDragEnd={() => setDragImageId("")}
+                      className={[
+                        "overflow-hidden rounded-xl border bg-white transition cursor-move",
+                        dragImageId === img.id ? "ring-2 ring-red-500 opacity-70" : "hover:border-red-300",
+                      ].join(" ")}
+                    >
                       <div className="aspect-square bg-gray-100">
                         <img src={img.previewUrl} alt={img.file.name} className="h-full w-full object-cover" />
                       </div>
@@ -604,6 +648,7 @@ export default function UploadProductPage() {
                     </div>
                   ))}
                 </div>
+                </>
               )}
             </Panel>
 

@@ -2,6 +2,8 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
+const multer = require("multer");
+const XLSX = require("xlsx");
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 const slugify = require("slugify");
@@ -9,6 +11,10 @@ const requireAdmin = require("../middleware/requireAdmin");
 
 const router = express.Router();
 const productUploadDir = path.join(__dirname, "..", "uploads", "products");
+const bulkSheetUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 15 * 1024 * 1024 },
+});
 
 function escapeRegex(value) {
   return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -52,6 +58,7 @@ function normalizeHeader(value) {
 }
 
 function parseCsv(text) {
+  text = String(text || "").replace(/^\uFEFF/, "");
   const rows = [];
   let row = [];
   let cell = "";
@@ -92,6 +99,21 @@ function parseCsv(text) {
     });
     return record;
   });
+}
+
+function parseSheetBuffer(file) {
+  if (!file?.buffer?.length) return "";
+  const originalName = String(file.originalname || "").toLowerCase();
+  const mime = String(file.mimetype || "").toLowerCase();
+
+  if (originalName.endsWith(".xlsx") || originalName.endsWith(".xls") || mime.includes("spreadsheet") || mime.includes("excel")) {
+    const workbook = XLSX.read(file.buffer, { type: "buffer", cellDates: false });
+    const sheetName = workbook.SheetNames[0];
+    if (!sheetName) throw new Error("The uploaded workbook has no sheets.");
+    return XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName], { blankrows: false });
+  }
+
+  return file.buffer.toString("utf8");
 }
 
 function getCell(row, aliases) {
@@ -483,7 +505,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/bulk-import", requireAdmin, async (req, res) => {
+router.post("/bulk-import", requireAdmin, bulkSheetUpload.single("file"), async (req, res) => {
   try {
     const {
       sheetUrl,
@@ -493,9 +515,17 @@ router.post("/bulk-import", requireAdmin, async (req, res) => {
       mode = "upsert",
     } = req.body || {};
 
-    const sourceCsv = csvText && String(csvText).trim()
-      ? String(csvText)
-      : await fetchText(googleSheetCsvUrl(sheetUrl));
+    const dryRunValue = dryRun === true || dryRun === "true";
+    const importImagesValue = importImages === true || importImages === "true";
+    if (!req.file && !String(csvText || "").trim() && !String(sheetUrl || "").trim()) {
+      return res.status(400).json({ message: "Upload a sheet file, paste CSV, or add a Google Sheet link." });
+    }
+
+    const sourceCsv = req.file
+      ? parseSheetBuffer(req.file)
+      : csvText && String(csvText).trim()
+        ? String(csvText)
+        : await fetchText(googleSheetCsvUrl(sheetUrl));
 
     const rows = parseCsv(sourceCsv);
     const errors = [];
@@ -535,7 +565,7 @@ router.post("/bulk-import", requireAdmin, async (req, res) => {
 
     const valid = parsed.filter((item) => item.rowErrors.length === 0);
 
-    if (dryRun) {
+    if (dryRunValue) {
       return res.json({
         totalRows: rows.length,
         validRows: valid.length,
@@ -591,7 +621,7 @@ router.post("/bulk-import", requireAdmin, async (req, res) => {
           item.product,
           req,
           item.rowNumber,
-          Boolean(importImages),
+          importImagesValue,
           warnings
         );
 

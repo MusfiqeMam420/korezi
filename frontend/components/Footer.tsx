@@ -16,6 +16,20 @@ function IconInstagram(props: any) {
     </svg>
   );
 }
+function IconYoutube(props: any) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5A3 3 0 0 0 2.4 7.2 31 31 0 0 0 2 12s.1 3.6.4 4.8a3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1c.3-1.2.4-4.8.4-4.8s0-3.6-.4-4.8ZM10 15.4V8.6L16 12l-6 3.4Z" />
+    </svg>
+  );
+}
+function IconWhatsapp(props: any) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M19.1 4.9A9.9 9.9 0 0 0 3.5 16.8L2.3 22l5.3-1.2A9.9 9.9 0 0 0 22 12a9.8 9.8 0 0 0-2.9-7.1ZM12 20.1a8 8 0 0 1-4.1-1.1l-.3-.2-3.1.7.7-3-.2-.3A8 8 0 1 1 12 20.1Zm4.4-6c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.8 1-.2.2-.3.2-.6.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.4c.1-.1.2-.3.3-.5.1-.2.1-.3 0-.5 0-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1-.1-.2-.3-.3-.5-.4Z" />
+    </svg>
+  );
+}
 function IconMail(props: any) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -103,6 +117,24 @@ export default function Footer() {
                 aria-label="Instagram"
               >
                 <IconInstagram className="w-5 h-5 text-gray-700" />
+              </a>
+              <a
+                href="https://www.youtube.com/@korezi_skin"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-2xl border bg-white hover:bg-gray-100 flex items-center justify-center"
+                aria-label="YouTube"
+              >
+                <IconYoutube className="w-5 h-5 text-gray-700" />
+              </a>
+              <a
+                href="https://wa.me/8801923815299"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-2xl border bg-white hover:bg-gray-100 flex items-center justify-center"
+                aria-label="WhatsApp"
+              >
+                <IconWhatsapp className="w-5 h-5 text-gray-700" />
               </a>
             </div>
           </div>
