@@ -41,7 +41,7 @@ export default function AdminProductsPage() {
   async function load() {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/products?limit=200`, {
+      const res = await fetch(`${API_BASE}/api/products?limit=all`, {
         cache: "no-store",
       });
 

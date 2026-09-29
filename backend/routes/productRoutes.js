@@ -862,7 +862,20 @@ router.get("/", async (req, res) => {
     // skinType is ARRAY in schema: [String]
     if (skinType) q.skinType = { $in: [new RegExp(`^${escapeRegex(skinType)}$`, "i")] };
     if (concern) q.concerns = { $in: [new RegExp(`^${escapeRegex(concern)}$`, "i")] };
-    if (tag) q.tags = { $in: [new RegExp(`^${escapeRegex(tag)}$`, "i")] };
+    if (tag) {
+      const tagRegex = new RegExp(escapeRegex(tag), "i");
+      q.$and = q.$and || [];
+      q.$and.push({
+        $or: [
+          { tags: { $in: [tagRegex] } },
+          { category: tagRegex },
+          { subCategory: tagRegex },
+          { thirdCategory: tagRegex },
+          { skinType: { $in: [tagRegex] } },
+          { concerns: { $in: [tagRegex] } },
+        ],
+      });
+    }
     if (inStock === "true") q.stock = { $gt: 0 };
 
     const min = minPrice === "" ? null : Number(minPrice);
@@ -882,7 +895,8 @@ router.get("/", async (req, res) => {
     const sortBy = sortMap[sort] || sortMap.newest;
 
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
-    const limitNum = Math.max(1, Math.min(50, parseInt(limit, 10) || 12));
+    const isUnbounded = String(limit).toLowerCase() === "all";
+    const limitNum = isUnbounded ? 0 : Math.max(1, Math.min(50, parseInt(limit, 10) || 12));
     const skip = (pageNum - 1) * limitNum;
 
     const [items, total] = await Promise.all([
@@ -894,7 +908,7 @@ router.get("/", async (req, res) => {
       items: items.map(normalizeProduct),
       total,
       page: pageNum,
-      pages: Math.ceil(total / limitNum),
+      pages: isUnbounded ? 1 : Math.ceil(total / limitNum),
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

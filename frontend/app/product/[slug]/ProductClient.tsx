@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -77,6 +78,8 @@ export default function SingleProductPage() {
   const [activeImg, setActiveImg] = useState("");
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const [videoOpen, setVideoOpen] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
   const [videoVisible, setVideoVisible] = useState(true);
   const [videoMuted, setVideoMuted] = useState(true);
   const [videoLiked, setVideoLiked] = useState(false);
@@ -100,6 +103,8 @@ export default function SingleProductPage() {
         setActiveImg(resolveImage(p?.images?.[0]));
         setFailedImages({});
         setVideoOpen(false);
+        setVideoReady(false);
+        setVideoFailed(false);
         setVideoVisible(true);
         setVideoLikeCount(Math.max(0, Number(p?.videoLikes || 0)));
         setVideoLiked(typeof window !== "undefined" ? localStorage.getItem(`korezi-video-like:${p?._id}`) === "1" : false);
@@ -108,6 +113,20 @@ export default function SingleProductPage() {
       .catch(() => setProduct(null))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  useEffect(() => {
+    if (!videoOpen) return;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousDocumentOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousDocumentOverflow;
+    };
+  }, [videoOpen]);
 
   useEffect(() => {
     if (!slug) return;
@@ -269,7 +288,11 @@ export default function SingleProductPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setVideoOpen(true)}
+                  onClick={() => {
+                    setVideoReady(false);
+                    setVideoFailed(false);
+                    setVideoOpen(true);
+                  }}
                   className="group block w-full overflow-hidden rounded-[22px] bg-black shadow-[0_3px_10px_rgb(0,0,0,0.2)] ring-4 ring-white transition hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(15,23,42,0.34)]"
                   aria-label="Play product video"
                 >
@@ -536,10 +559,11 @@ export default function SingleProductPage() {
         </div>
       </motion.div>
 
-      <AnimatePresence>
-        {videoOpen && videoUrl && (
-        <motion.div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/82 p-3 backdrop-blur-sm"
+      {typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
+          {videoOpen && videoUrl && (
+          <motion.div
+          className="fixed inset-0 z-[999] flex h-dvh w-screen items-center justify-center overflow-hidden bg-black/82 p-3 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           onClick={() => setVideoOpen(false)}
@@ -549,7 +573,7 @@ export default function SingleProductPage() {
           transition={{ duration: 0.18 }}
         >
           <motion.div
-            className="relative h-[min(88vh,780px)] w-full max-w-[390px] overflow-hidden rounded-[10px] bg-black shadow-[0_30px_100px_rgba(0,0,0,0.55)] ring-1 ring-white/20"
+            className="relative aspect-[9/16] max-h-[calc(100dvh-24px)] w-full max-w-[390px] overflow-hidden rounded-[18px] bg-[#171717] shadow-[0_30px_100px_rgba(0,0,0,0.55)] ring-1 ring-white/30"
             onClick={(e) => e.stopPropagation()}
             initial={{ opacity: 0, scale: 0.92, y: 28 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -566,12 +590,30 @@ export default function SingleProductPage() {
             </button>
             <video
               src={videoUrl}
+              poster={mainImg || undefined}
               autoPlay
               loop
               playsInline
               muted={videoMuted}
-              className="absolute inset-0 h-full w-full bg-black object-cover"
+              onCanPlay={() => setVideoReady(true)}
+              onError={() => {
+                setVideoReady(false);
+                setVideoFailed(true);
+              }}
+              className="absolute inset-0 h-full w-full bg-[#171717] object-cover"
             />
+            {!videoReady && (
+              <div className="absolute inset-0 z-[5] grid place-items-center bg-black/25 p-6 text-center text-white">
+                {videoFailed ? (
+                  <div className="rounded-2xl bg-black/60 px-5 py-4 text-sm backdrop-blur">
+                    <p className="font-semibold">Video unavailable</p>
+                    <p className="mt-1 text-xs text-white/70">Please try again later.</p>
+                  </div>
+                ) : (
+                  <div className="rounded-full bg-black/45 px-4 py-3 text-xs backdrop-blur">Loading video...</div>
+                )}
+              </div>
+            )}
             <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/40" />
             <div className="absolute left-0 right-0 top-0 z-10 h-1 bg-white/20">
               <div className="h-full w-3/4 rounded-r-full bg-white/80" />
@@ -633,9 +675,11 @@ export default function SingleProductPage() {
               </button>
             </div>
           </motion.div>
-        </motion.div>
-        )}
-      </AnimatePresence>
+          </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </main>
   );
 }

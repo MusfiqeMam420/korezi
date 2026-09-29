@@ -61,6 +61,7 @@ export default function ShopClient() {
   const [category, setCategory] = useState(params.get("category") || "");
   const [subCategory, setSubCategory] = useState(params.get("subCategory") || "");
   const [thirdCategory, setThirdCategory] = useState(params.get("thirdCategory") || "");
+  const [tag, setTag] = useState(params.get("tag") || "");
   const [skinType, setSkinType] = useState(params.get("skinType") || "");
   const [minPrice, setMinPrice] = useState(params.get("minPrice") || "");
   const [maxPrice, setMaxPrice] = useState(params.get("maxPrice") || "");
@@ -101,7 +102,7 @@ export default function ShopClient() {
 
   useEffect(() => {
     setPage(1);
-  }, [search, brand, category, subCategory, thirdCategory, skinType, minPrice, maxPrice, inStock, sort]);
+  }, [search, brand, category, subCategory, thirdCategory, tag, skinType, minPrice, maxPrice, inStock, sort]);
 
   useEffect(() => {
     if (!subcategories.some((item) => item.name === subCategory)) {
@@ -121,6 +122,7 @@ export default function ShopClient() {
     if (category) sp.set("category", category);
     if (subCategory) sp.set("subCategory", subCategory);
     if (thirdCategory) sp.set("thirdCategory", thirdCategory);
+    if (tag) sp.set("tag", tag);
     if (skinType) sp.set("skinType", skinType);
     if (minPrice) sp.set("minPrice", minPrice);
     if (maxPrice) sp.set("maxPrice", maxPrice);
@@ -130,7 +132,7 @@ export default function ShopClient() {
 
     const query = sp.toString();
     router.replace(query ? `/shop?${query}` : "/shop", { scroll: false });
-  }, [search, brand, category, subCategory, thirdCategory, skinType, minPrice, maxPrice, inStock, sort, page, router]);
+  }, [search, brand, category, subCategory, thirdCategory, tag, skinType, minPrice, maxPrice, inStock, sort, page, router]);
 
   const qs = useMemo(() => {
     const p = new URLSearchParams();
@@ -139,6 +141,7 @@ export default function ShopClient() {
     if (category) p.set("category", category);
     if (subCategory) p.set("subCategory", subCategory);
     if (thirdCategory) p.set("thirdCategory", thirdCategory);
+    if (tag) p.set("tag", tag);
     if (skinType) p.set("skinType", skinType);
     if (minPrice) p.set("minPrice", minPrice);
     if (maxPrice) p.set("maxPrice", maxPrice);
@@ -147,7 +150,7 @@ export default function ShopClient() {
     p.set("page", String(page));
     p.set("limit", "16");
     return p.toString();
-  }, [search, brand, category, subCategory, thirdCategory, skinType, minPrice, maxPrice, inStock, sort, page]);
+  }, [search, brand, category, subCategory, thirdCategory, tag, skinType, minPrice, maxPrice, inStock, sort, page]);
 
   useEffect(() => {
     setLoading(true);
@@ -181,6 +184,7 @@ export default function ShopClient() {
     category ? { label: `Category: ${category}`, clear: () => setCategory("") } : null,
     subCategory ? { label: `Type: ${subCategory}`, clear: () => setSubCategory("") } : null,
     thirdCategory ? { label: `3rd: ${thirdCategory}`, clear: () => setThirdCategory("") } : null,
+    tag ? { label: `Tag: ${tag}`, clear: () => setTag("") } : null,
     skinType ? { label: `Skin: ${skinType}`, clear: () => setSkinType("") } : null,
     minPrice ? { label: `Min ৳${minPrice}`, clear: () => setMinPrice("") } : null,
     maxPrice ? { label: `Max ৳${maxPrice}`, clear: () => setMaxPrice("") } : null,
@@ -197,6 +201,7 @@ export default function ShopClient() {
     setCategory("");
     setSubCategory("");
     setThirdCategory("");
+    setTag("");
     setSkinType("");
     setMinPrice("");
     setMaxPrice("");
